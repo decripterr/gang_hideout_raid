@@ -1,15 +1,22 @@
 fx_version 'cerulean'
 game 'gta5'
 
+description 'Gang Hideout Raid (Multiplayer Synced)'
 author 'Decripterr'
-description 'Gang Hideout Raid Heist for QBCore with ps-dispatch integration'
-version '1.1.0'
+version '1.0.0'
 
 shared_script 'config.lua'
+
 client_scripts {
-    'client.lua',
+    'client.lua'
 }
+
 server_scripts {
-    '@oxmysql/lib/MySQL.lua', -- Remove if not using MySQL
-    'server.lua',
+    '@qb-core/server/main.lua',
+    'server.lua'
+}
+
+dependencies {
+    'qb-core',
+    'qb-target'
 }

@@ -1,39 +1,28 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 
-RegisterServerEvent("gangraid:requestStart", function()
-    local src = source
-    local Player = QBCore.Functions.GetPlayer(src)
-    if not Player then return end
-
-    local raid = Config.RaidLocations[math.random(#Config.RaidLocations)]
-    TriggerClientEvent("gangraid:start", src, raid)
+RegisterNetEvent("gang_hideout:startRaid", function()
+    TriggerClientEvent("gang_hideout:spawnGuards", -1)
+    TriggerClientEvent("gang_hideout:spawnLoot", -1)
+    TriggerClientEvent("gang_hideout:createBlip", -1)
 end)
 
-RegisterServerEvent("gangraid:giveReward", function()
+RegisterNetEvent("gang_hideout:giveLoot", function()
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if not Player then return end
 
-    for _, reward in pairs(Config.Rewards) do
-        if math.random(100) <= reward.chance then
-            Player.Functions.AddItem(reward.item, reward.amount)
-            TriggerClientEvent("QBCore:Notify", src, "Found: " .. reward.item, "success")
+    -- Customize your loot here
+    local items = {
+        { name = "markedmoney", chance = 60 },
+        { name = "weapon_pumpshotgun", chance = 10 },
+        { name = "cokebaggy", chance = 30 }
+    }
+
+    for _, item in pairs(items) do
+        if math.random(1, 100) <= item.chance then
+            Player.Functions.AddItem(item.name, 500)
+            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items[item.name], "add")
             break
         end
     end
-end)
-
-RegisterServerEvent("gangraid:policeAlert", function(coords)
-    local alertData = {
-        title = "Gang Hideout Raid",
-        coords = coords,
-        description = "Gunfire and gang activity reported near a warehouse!",
-        radius = 75,
-        sprite = 84,
-        color = 1,
-        scale = 1.2,
-        duration = 6000,
-        job = { 'police', 'sheriff' }
-    }
-    TriggerClientEvent("ps-dispatch:client:customAlert", -1, alertData)
 end)
